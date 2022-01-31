@@ -1,0 +1,72 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		// specify your JDBC driver
+		classpath 'com.h2database:h2:2.1.210'
+	}
+}
+
+plugins {
+	id 'org.springframework.boot' version '2.6.3'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id "org.seasar.doma.compile" version "1.1.1-beta1"
+	id 'org.seasar.doma.codegen' version '1.4.1'
+}
+
+group = 'ai.inside'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: '2.6.2'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly group: 'com.h2database', name: 'h2', version: '2.1.210'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	// Doma
+	implementation("org.seasar.doma:doma-core:2.51.0")
+	annotationProcessor("org.seasar.doma:doma-processor:2.51.0")
+	implementation group: 'org.seasar.doma.boot', name: 'doma-spring-boot-starter', version: '1.6.0'
+}
+
+domaCodeGen {
+	// make an arbitrary named block
+	dev {
+		// JDBC url
+		url = 'jdbc:h2:mem:develop;MODE=Mysql;DB_CLOSE_ON_EXIT=TRUE'
+		// JDBC user
+		user = 'sa'
+		// JDBC password
+		password = ''
+		// configuration for generated entity source files
+		entity {
+			packageName = 'ai.inside.domademo2.entity'
+		}
+		// configuration for generated DAO source files
+		dao {
+			packageName = 'ai.inside.domademo2.dao'
+		}
+	}
+}
+
+test {
+	useJUnitPlatform()
+}
